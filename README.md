@@ -18,6 +18,7 @@
 - 运行数据库脚本smartorder.sql
 - 运行项目，访问localhost:8080
 - 管理员：admin，密码：123
+# 效果预览
 ![请添加图片描述](https://img-blog.csdnimg.cn/20200801161359900.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMjEzMDE0,size_16,color_FFFFFF,t_70)
 ![请添加图片描述](https://img-blog.csdnimg.cn/2020080116140032.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMjEzMDE0,size_16,color_FFFFFF,t_70)
 ![请添加图片描述](https://img-blog.csdnimg.cn/20200801161400825.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzQyMjEzMDE0,size_16,color_FFFFFF,t_70)
