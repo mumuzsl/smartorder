@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>点餐</title>
+    <!-- <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css'> -->
+    <!-- <link rel='stylesheet' href='/lib/font-awesome/5.13.1/css/all.min.css'> -->
+    <link rel="stylesheet" href="/lib/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="/lib/counter/style.css">
+    <style>
+        .dishes-area {
+            height: 400px;
+        }
+
+        .dishes-box {
+            /* height: 250px; */
+            /*border: 1px red solid;*/
+
+        }
+
+        .dishes-box img {
+            height: 200px;
+            width: 200px;
+            /*border: 1px solid blue;*/
+        }
+
+        .new-btn {
+            width: 20%;
+            margin-left: 10%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div id="app">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-row">
+                        <div class="layui-col-xs3">
+                            <label class="layui-form-label">输入桌号</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"
+                                       placeholder="请输入桌号" class="layui-input" v-model="deskNum">
+                            </div>
+                        </div>
+                        <div class="layui-col-xs9">
+                            <button type="button" class="layui-btn layui-btn-normal new-btn"
+                                    @click="newOrder">下单
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space10 dishes-area">
+                        <div class="layui-col-xs3" v-for="(dishes,index) in upList">
+                            <div class="grid-demo grid-demo-bg1 dishes-box">
+                                <div class="layui-row">
+                                    <div class="layui-col-xs6">
+                                        <img :src="dishes.img"/>
+                                    </div>
+                                    <div class="layui-col-xs6"
+                                         style="display: inline-block;width: 100px;position: relative;margin-left: 50px;padding: 10px;">
+                                        <div style="width: 100%;">
+                                            <label style="font-size: 130%;display: inline-block">{{dishes.name}}</label>
+                                        </div>
+                                        <label style="display: inline-block" v-show="dishes.recommend">推荐</label>
+                                        <p style="display: inline-block">{{dishes.description}}</p>
+                                        <div
+                                                style="margin-top:120%;margin-left: 10%;border: 1px solid yellow;text-align:center;">
+                                            <counter v-on:count-event="handleCount" :num="index" :msg="dishes.id">
+                                            </counter>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div id="test1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/lib/vue/vue.js"></script>
+<script src="/lib/vue/httpVueLoader.js"></script>
+<script src="/lib/vue/vue-resource.min.js"></script>
+<script src="/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="global.js"></script>
+<script>
+    layui.use('laypage', function () {
+        var laypage = layui.laypage;
+
+        $.get(dev_url + 'api/dishes/list?size=8&&page=1', function (resp) {
+            var c = 0;
+            c = resp.totalPages
+
+            //执行一个laypage实例
+            laypage.render({
+                elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+                , count: c //数据总数，从服务端得到
+            });
+        })
+    });
+</script>
+<script>
+    Vue.use(httpVueLoader)
+    var app = new Vue({
+        el: '#app',
+        data: {
+            upList: [],
+            downList: [],
+            infos: [],
+            deskNum: undefined,
+            temp: {}
+        },
+        mounted: function () {
+            this.$nextTick(function () {
+                this.getData(1)
+            })
+            // setInterval(() => {
+            //     console.log(this.counts)
+            // }, 2000)
+        },
+        methods: {
+            initList: function () {
+                for (var i = 0; i < 4; i++) {
+                    // this.upList.push({})
+                    // this.downList.push({})
+                }
+            },
+            getData: function (page) {
+                this.$http.get(dev_url + 'api/dishes/list?size=8&&page=' + page)
+                    .then(function (resp) {
+                        var elements = resp.data.elements
+                        // var length = resp.data.elements.length
+                        this.upList = elements
+                        // this.upList = [{}, {}, {}, {}, {}, {}, {}, {},]
+                    }, function (reason) {
+
+                    })
+            },
+            handleCount: function (v) {
+                // this.infos.push({
+                //     dishes: v.msg,
+                //     count: v.count
+                // })
+                // var _list = this.upList
+                // // console.log(_list)
+                // // console.log(v.number)
+                // _list[v.number]["count"] = v.count
+                // _list[v.number]["dishesId"] = v.msg;
+                // this.infos = _list;
+                this.temp[v.msg] = v.count
+            },
+            newOrder: function () {
+                var infos = []
+                var obj = this.temp
+
+                Object.keys(obj).forEach((key) => {
+                    console.log(key, obj[key]);
+
+                    if (obj[key] != 0) {
+                        var o = {
+                            dishesId: key,
+                            count: obj[key]
+                        }
+                        infos.push(o)
+                    }
+                });
+                if (this.deskNum === undefined || this.deskNum === '') {
+                    alert("请输入桌号")
+                    return
+                }
+                if (infos.length === 0) {
+                    alert("请选择菜品")
+                    return
+                }
+                var data = {
+                    deskNum: this.deskNum,
+                    dishesInfo: infos
+                }
+                console.log(data)
+                this.$http.post(dev_url + 'api/order/new', data)
+                    .then(function (resp) {
+                        console.log(resp)
+                        alert("下单成功")
+                    }, function (reason) {
+                        console.log(reason)
+                    })
+            }
+        },
+        components: {
+            // 将组建加入组建库
+            'counter': {
+                props: ['num', 'msg'],
+                template: '<div class="counter">' +
+                    '<button @click="subtract" :disabled="isAnimating">' +
+                    '<i class="fa fa-minus"></i>' +
+                    '</button>' +
+                    '<span :class="{before: isBefore, after: isAfter}" :data-before="countBefore" :data-after="countAfter">{{ count }}</span>' +
+                    '<button @click="add" :disabled="isAnimating">' +
+                    '<i class="fa fa-plus"></i>' +
+                    '</button>' +
+                    '</div>',
+                data: function () {
+                    return {
+                        count: 0,
+                        countBefore: 0,
+                        countAfter: 1,
+                        isBefore: false,
+                        isAfter: false,
+                    }
+                },
+                computed: {
+                    isAnimating() {
+                        return this.isBefore || this.isAfter
+                    }
+                },
+                methods: {
+                    subtract() {
+                        if (this.count <= 0)
+                            return
+                        this.isBefore = true
+
+                        setTimeout(() => {
+                            this.count--
+                            this.countBefore = this.countBefore - 1
+                            this.countAfter = this.count + 1
+                            this.isBefore = false
+                            this.$emit('count-event', {
+                                count: this.count,
+                                number: this.num,
+                                msg: this.msg
+                            })
+                        }, 200)
+
+                    },
+                    add() {
+                        this.isAfter = true
+
+                        setTimeout(() => {
+                            this.count++
+
+
+                            this.countBefore = this.count - 1
+                            this.countAfter = this.count + 1
+                            this.isAfter = false
+
+                            this.$emit('count-event', {
+                                count: this.count,
+                                number: this.num,
+                                msg: this.msg
+                            })
+                        }, 200)
+
+                    }
+                }
+            }
+        },
+    })
+</script>
+</body>
+
+</html>

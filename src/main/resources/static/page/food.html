@@ -1,0 +1,234 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">菜品名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" id="name" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <!-- <div class="layui-inline">
+                            <label class="layui-form-label">菜品编号</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="sex" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
+                        <!-- <div class="layui-inline">
+                            <label class="layui-form-label">用户城市</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="city" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
+                        <!-- <div class="layui-inline">
+                            <label class="layui-form-label">用户职业</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="classify" autocomplete="off" class="layui-input">
+                            </div>
+                        </div> -->
+                        <div class="layui-inline">
+                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加</button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除</button>
+            </div>
+        </script>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <!-- <a class="layui-btn layui-btn-xs layui-btn-danger data-count-info" lay-event="info">详细信息</a> -->
+        </script>
+
+    </div>
+</div>
+<script src="/js/axios.min.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+    layui.use(['form', 'table', 'miniPage', 'element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            miniPage = layui.miniPage;
+
+        table.render({
+            elem: '#currentTableId',
+            url: dev_url + 'api/dishes/list',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            parseData: function (res) { //res 即为原始返回的数据
+                console.log(res)
+                return {
+                    "code": 0, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.totalElements, //解析数据长度
+                    "data": res.elements //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                , limitName: 'size' //每页数据量的参数名，默认：limit
+            },
+            cols: [[
+                {type: "checkbox", width: 50},
+                {field: 'id', width: 120, title: '菜品编号', sort: true},
+                {field: 'name', width: 120, title: '菜品名称'},
+                {field: 'price', width: 120, title: '菜品价格'},
+                {field: 'recommend', width: 120, title: '是否推荐'},
+                {field: 'description', width: 200, title: '菜品描述'},
+                {field: 'txt', width: 120, title: '菜品简介'},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            // layer.alert(result, {
+            //     title: '最终的搜索信息'
+            // });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    name: $("#name").val()
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        /**
+         * toolbar事件监听
+         */
+        table.on('toolbar(currentTableFilter)', function (obj) {
+            if (obj.event === 'add') {   // 监听添加操作
+                var content = miniPage.getHrefContent('page/table/foodAdd.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                localStorage.removeItem("dishesId")
+
+                var index = layer.open({
+                    title: '添加菜品',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+            } else if (obj.event === 'delete') {  // 监听删除操作
+                var checkStatus = table.checkStatus('currentTableId')
+                    , data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+
+                //向服务端发送删除指令
+                layer.confirm('真的删除行么', function (index) {
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    postApi('/api/dishes/remove', data).then((response) => {
+                        console.log(response);
+                        // layer.alert("成功啦！")
+                        table.reload('currentTableId');
+                    }).catch(function (error) {
+                        console.log(error);
+                        layer.alert("出错啦！")
+                    });
+                });
+            }
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var content = miniPage.getHrefContent('page/table/foodEdit.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                localStorage.setItem("dishesId", data.id)
+
+                var index = layer.open({
+                    title: '编辑菜品',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'info') {
+                var content = miniPage.getHrefContent('page/table/foodinfo.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '菜品信息',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+                layer.confirm('真的删除行么', function (index) {
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    postApi('/api/dishes/remove', [{id: data.id}]).then((response) => {
+                        console.log(response);
+                        obj.del();
+                        layer.msg(response.data.message)
+                    }).catch(function (error) {
+                        console.log(error);
+                        layer.msg("出错啦！")
+                    });
+                });
+            }
+        });
+
+    });
+</script>

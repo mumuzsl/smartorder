@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqjtu.smartorder.dao.mapper.DishesMapper">
+
+    <select id="findAll"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
+        select *
+        from `dishes`
+        <!--        <if test="columnSorts!=null">-->
+        <!--            order by-->
+        <!--            <foreach collection="columnSorts" item="columnSort" index="index" separator=",">-->
+        <!--                #{columnSort.column} #{columnSort.sort}-->
+        <!--            </foreach>-->
+        <!--        </if>-->
+        order by recommend desc
+        limit #{offset}, #{rows};
+    </select>
+
+    <!--    <select id="findAllOrderByRecommend"-->
+    <!--            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"-->
+    <!--            resultType="com.cqjtu.smartorder.dao.dataobject.DishesDO">-->
+    <!--        select *-->
+    <!--        from `dishes`-->
+    <!--        order by recommend desc-->
+    <!--        limit #{offset}, #{rows};-->
+    <!--    </select>-->
+
+    <select id="getById"
+            resultType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
+        SELECT *
+        FROM `dishes`
+        where id = #{id}
+    </select>
+
+    <select id="count"
+            resultType="java.lang.Integer">
+        select count(*)
+        from `dishes`;
+    </select>
+
+    <insert id="insert"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
+        INSERT INTO `smartorder`.`dishes`(`name`, `price`, `img`, `recommend`, `description`, `txt`)
+        VALUES (#{name}, #{price}, #{img}, #{recommend}, #{description}, #{txt});
+    </insert>
+
+
+    <update id="updateById"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
+        UPDATE `smartorder`.`dishes`
+        SET `name`        = #{name},
+            `price`       = #{price},
+            `img`         = #{img},
+            `recommend`   = #{recommend},
+            `description` = #{description},
+            `txt`         = #{txt}
+        WHERE `id` = #{id};
+    </update>
+
+    <select id="getPriceById"
+            resultType="java.lang.Float">
+        select price
+        from dishes
+        where id = #{id}
+    </select>
+
+    <select id="search"
+            resultType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
+        select *
+        from `smartorder`.dishes
+        where `name` like concat("%", #{name}, "%")
+        limit #{offset}, #{rows};
+    </select>
+
+    <select id="searchCount" resultType="java.lang.Integer">
+        select count(*)
+        from `smartorder`.dishes
+        where name like concat("%", #{name}, "%")
+        limit #{offset}, #{rows};
+    </select>
+
+    <delete id="deletes">
+        delete from `smartorder`.`dishes` where id in
+        <foreach collection="list" item="dishes" open="(" close=")" separator=",">
+            #{dishes.id}
+        </foreach>
+    </delete>
+</mapper>

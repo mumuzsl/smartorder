@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqjtu.smartorder.dao.mapper.OrderDetailMapper">
+
+    <select id="listByOrderId" parameterType="java.lang.Integer"
+            resultType="com.cqjtu.smartorder.api.model.OrderDetail">
+        select t3.dishes_id,
+               t3.count,
+               t3.price,
+               t2.name as dishes_name
+        from `order` t1,
+             `dishes` t2,
+             `order_detail` t3
+        where t1.id = t3.order_id
+          and t2.id = t3.dishes_id
+          and t1.id = #{orderId}
+    </select>
+
+    <insert id="insert"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.OrderDetailDO">
+        INSERT INTO `smartorder`.`order_detail`(`order_id`, `dishes_id`, `price`, `count`)
+        VALUES (#{orderId}, #{dishesId}, #{price}, #{count});
+    </insert>
+
+
+    <update id="updateById"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.OrderDetailDO">
+        UPDATE `smartorder`.`order_detail`
+        SET `order_id`  = #{orderId},
+            `dishes_id` = #{dishesId},
+            `price`     = #{price},
+            `count`     = #{count}
+        WHERE `id` = #{id};
+    </update>
+
+    <select id="findAllByStatus"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.api.model.OrderDetail">
+        select t3.`id`,
+               t3.dishes_id,
+               t3.count,
+               t2.name as dishes_name,
+               t1.desk_num as deskNum
+        from `smartorder`.`order` t1,
+             `smartorder`.`dishes` t2,
+             `smartorder`.`order_detail` t3
+        where t1.id = t3.order_id
+          and t2.`id` = t3.dishes_id
+          and t3.`status` = #{status}
+          AND t1.`status` = #{status}
+        limit #{pageRequest.offset}, #{pageRequest.rows};
+    </select>
+
+    <select id="countByStatus"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        select count(*)
+        from `order_detail`
+        where status = #{status}
+    </select>
+
+    <update id="finish"
+            parameterType="java.lang.Integer">
+        update `smartorder`.`order_detail`
+        set `status`=1
+        where id = #{id};
+    </update>
+
+    <select id="statistic"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.api.vo.DishesStatisticVO">
+        SELECT t3.`dishes_id`,
+               SUM(t3.`count`)              AS `count`,
+               SUM(t3.`count` * t3.`price`) AS `amount`,
+               t2.`name`                    AS `dishes_name`
+        FROM `smartorder`.`order` t1,
+             `smartorder`.`dishes` t2,
+             `smartorder`.`order_detail` t3
+        WHERE t1.id = t3.order_id
+          AND t2.id = t3.dishes_id
+        GROUP BY t3.dishes_id
+        ORDER BY count DESC,
+                 amount DESC
+        LIMIT #{offset}, #{rows};
+    </select>
+
+    <select id="statisticCount"
+            resultType="java.lang.Integer">
+        SELECT COUNT(DISTINCT t3.`dishes_id`) AS `count`
+        FROM `smartorder`.`order` t1,
+             `smartorder`.`dishes` t2,
+             `smartorder`.`order_detail` t3
+        WHERE t1.id = t3.order_id
+          AND t2.id = t3.dishes_id
+    </select>
+
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqjtu.smartorder.dao.mapper.NoticeMapper">
+
+    <select id="findAll"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
+        select *
+        from `notice`
+        <if test="columnSorts!=null">
+            order by
+            <foreach collection="columnSorts" item="columnSort" index="index" separator=",">
+                #{columnSort.column} #{columnSort.sort}
+            </foreach>
+        </if>
+        limit #{offset}, #{rows};
+    </select>
+
+    <select id="getById"
+            resultType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
+        SELECT *
+        FROM `notice`
+        where id = #{id}
+    </select>
+
+    <select id="count"
+            resultType="java.lang.Integer">
+        select count(*)
+        from `notice`;
+    </select>
+
+    <insert id="insert"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
+        INSERT INTO `smartorder`.`notice`(`content`, `title`, `uesr_id`, `uid`)
+        VALUES (#{content}, #{title}, #{userId}, #{uid});
+    </insert>
+
+
+    <update id="updateById"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
+        UPDATE `smartorder`.`notice`
+        SET `content` = #{content},
+            `title`   = #{title},
+            `uesr_id` = #{userId}
+        WHERE `id` = #{id};
+    </update>
+
+    <insert id="insertUnread"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.UserNoticeDO">
+        INSERT INTO `smartorder`.`user_notice`(`user_id`, `notice_uid`)
+        VALUES (#{userId}, #{noticeUid});
+    </insert>
+
+    <update id="updateRead"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.UserNoticeDO">
+        UPDATE `smartorder`.`user_notice`
+        SET `read_status` = 1
+        WHERE `notice_uid` = #{noticeUid}
+          and `user_id` = #{userId}
+    </update>
+
+    <select id="findUnreadByUserId"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Long">
+        select `notice_uid`
+        from `smartorder`.`user_notice`
+        where `user_id` = #{userId}
+          and `read_status` = 0;
+    </select>
+
+    <select id="getByUid"
+            parameterType="java.lang.Long"
+            resultType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
+        select *
+        from `smartorder`.`notice`
+        where uid = #{uid}
+        order by create_time desc
+    </select>
+</mapper>

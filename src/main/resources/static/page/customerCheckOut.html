@@ -1,0 +1,290 @@
+<style>
+    .d1 {
+        border: 1px;
+        width: 200px
+    }
+</style>
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+
+        <!--        <fieldset class="table-search-fieldset">-->
+        <!--            <legend>搜索信息</legend>-->
+        <!--            <div style="margin: 10px 10px 10px 10px">-->
+        <!--                <form class="layui-form layui-form-pane" action="">-->
+        <!--                    <div class="layui-form-item">-->
+        <!--                        <div class="layui-inline">-->
+        <!--                            <label class="layui-form-label">桌号</label>-->
+        <!--                            <div class="layui-input-inline">-->
+        <!--                                <input type="text" name="number" autocomplete="off" class="layui-input">-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                        <div class="layui-inline">-->
+        <!--                            <button type="submit" class="layui-btn layui-btn-primary" lay-submit-->
+        <!--                                lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </form>-->
+        <!--            </div>-->
+        <!--        </fieldset>-->
+
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <!--                <span class="layui-btn layui-btn-normal layui-btn-sm data-add-btn">待结账餐桌信息</span>-->
+                <!-- <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button> -->
+            </div>
+        </script>
+
+        <div class="layui-card">
+            <div class="layui-card-body">
+                待结账餐桌信息
+            </div>
+        </div>
+
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+
+
+        <script type="text/html" id="currentTableBar">
+            <!-- <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="show">查看</a> -->
+            <!-- <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a> -->
+            <div class="d1">
+                <a class="layui-btn layui-btn-fluid layui-btn-danger" lay-event="check">买单</a>
+                <a class="layui-btn layui-btn-normal  data-count-edit" lay-event="show">查看</a>
+                <!--                <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>-->
+                <!-- <a href="table/customerCheckOutShow.html"><button> kan </button></a> -->
+            </div>
+        </script>
+
+        <!-- <a href="table/customerCheckOutShow.html"><button> kan </button></a> -->
+    </div>
+</div>
+
+<script src="/js/axios.min.js"></script>
+<script>
+    var handlePay = function (o) {
+        console.log(o)
+    }
+
+    layui.use(['form', 'table', 'miniPage', 'element'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            miniPage = layui.miniPage;
+
+        table.render({
+            elem: '#currentTableId',
+            url: 'api/order/list',
+            toolbar: '#toolbarDemo',
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            parseData: function (res) { //res 即为原始返回的数据
+                console.log(res)
+                return {
+                    "code": 0, //解析接口状态
+                    "msg": res.message, //解析提示文本
+                    "count": res.totalElements, //解析数据长度
+                    "data": res.elements //解析数据列表
+                };
+            },
+            request: {
+                pageName: 'page' //页码的参数名称，默认：page
+                , limitName: 'size' //每页数据量的参数名，默认：limit
+            },
+            cols: [[
+                // {type: "checkbox", width: 50},
+                {field: 'id', width: 80, title: 'ID'},
+                {field: 'deskNum', width: 100, title: '桌号'},
+                {field: 'startTime', width: 200, title: '开餐时间'},
+                // {field: 'endTime', width: 130, title: '结账时间'},
+                {field: 'amount', width: 130, title: '总金额', sort: true},
+                {title: '操作', minWidth: 150, toolbar: '#currentTableBar', align: "center"}
+            ]],
+            limits: [10, 15, 20, 25, 50, 100],
+            limit: 15,
+            page: true,
+            skin: 'line'
+        });
+
+        // 监听搜索操作
+        form.on('submit(data-search-btn)', function (data) {
+            var result = JSON.stringify(data.field);
+            layer.alert(result, {
+                title: '最终的搜索信息'
+            });
+
+            //执行搜索重载
+            table.reload('currentTableId', {
+                page: {
+                    curr: 1
+                }
+                , where: {
+                    searchParams: result
+                }
+            }, 'data');
+
+            return false;
+        });
+
+        //监听表格复选框选择
+        table.on('checkbox(currentTableFilter)', function (obj) {
+            console.log(obj)
+        });
+
+        table.on('tool(currentTableFilter)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'edit') {
+
+                var content = miniPage.getHrefContent('page/table/userAdd.html');
+                var openWH = miniPage.getOpenWidthHeight();
+
+                var index = layer.open({
+                    title: '编辑员工',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'delete') {
+
+
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event == 'show') {
+
+                localStorage.setItem("orderId", data.id)
+
+                var content = miniPage.getHrefContent('page/customerCheckOutShow.html');
+                var openWH = miniPage.getOpenWidthHeight();
+                var index = layer.open({
+                    title: '详细信息',
+                    type: 1,
+                    shade: 0.2,
+                    maxmin: true,
+                    shadeClose: true,
+                    area: [openWH[0] + 'px', openWH[1] + 'px'],
+                    offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                    content: content,
+                    function() {
+                        console.log("bbbbbbbbb")
+                        localStorage.removeItem("orderId");
+                    }
+                });
+                $(window).on("resize", function () {
+                    layer.full(index);
+                });
+                return false;
+            } else if (obj.event === 'check') {
+                // var btn = document.getElementById("id1");
+                // btn.innerHTML = "已买单"
+                // btn.style.background = "green";
+                console.log(data)
+
+                axios.get('api/order/over?id=' + data.id)
+                    .then((response) => {
+                        obj.del()
+
+                        var content = miniPage.getHrefContent('page/pay.html');
+                        var openWH = miniPage.getOpenWidthHeight();
+                        var index = layer.open({
+                            title: '支付',
+                            type: 1,
+                            shade: 0.2,
+                            maxmin: true,
+                            shadeClose: true,
+                            area: [openWH[0] + 'px', openWH[1] + 'px'],
+                            offset: [openWH[2] + 'px', openWH[3] + 'px'],
+                            content: content,
+                            end: function () {
+                                alert("买单成功")
+                            }
+                        });
+                        $(window).on("resize", function () {
+                            layer.full(index);
+                        });
+
+                        console.log(response)
+                    })
+                    .catch(reason => {
+                        console.log(reason)
+                    })
+                return false;
+            }
+        });
+
+    });
+</script>
+<script>
+    layui.use('layer', function () { //独立版的layer无需执行这一句
+        var $ = layui.jquery, layer = layui.layer; //独立版的layer无需执行这一句
+
+        var handleNotice = function () {
+            axios.get(dev_url + 'api/notice/fetch')
+                .then(function (resp) {
+                    console.log(resp)
+
+                    var data = resp.data
+                    console.log(data)
+
+                    var r = ''
+                    data.forEach(function (e) {
+                        if (e != null)
+                            r += '<div style="margin-top: 20px;">' + e.content + '</div>'
+                    });
+
+                    console.log(r)
+
+                    var h = '<div style="padding: 20px 100px;"></div>'
+                    layer.open({
+                        type: 1
+                        , offset: 'auto' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        , id: 'layerDemo' //防止重复弹出
+                        , area: ['600px', '240px']
+                        , content: '<div style="padding: 20px 100px;">' + r + '</div>'
+                        , btn: '关闭全部'
+                        , btnAlign: 'c' //按钮居中
+                        , shade: 0 //不显示遮罩
+                        , yes: function () {
+                            layer.closeAll();
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+        }
+
+        $('#im').on('click', function () {
+            console.log("aaaaa")
+            handleNotice()
+            // var othis = $(this), method = othis.data('method');
+            // active[method] ? active[method].call(this, othis) : '';
+        });
+
+    });
+</script>
+<script>
+    // var im = function () {
+    //     setInterval(() => {
+    //         axios.get('api/im/fetch')
+    //             .then((response) => {
+    //                 console.log(response)
+    //             })
+    //             .catch(reason => {
+    //                 console.log(reason)
+    //             })
+    //     }, 3000)
+    // }
+    //
+    // im();
+</script>

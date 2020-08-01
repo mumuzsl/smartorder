@@ -1,0 +1,45 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div id="app">
+            <div class="layui-row" style="margin: 30px">
+                <input placeholder="请输入公告内容"
+                       class="layui-input"
+                       type="text"
+                       v-model="content">
+            </div>
+            <div class="layui-row" style="margin: 30px">
+                <button type="button" class="layui-btn layui-btn-normal new-btn"
+                        @click="send">发布
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../lib/vue/vue.js"></script>
+<script src="../js/axios.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            content: ''
+        },
+        methods: {
+            send: function () {
+                if (this.content === '') {
+                    alert("请输入公告内容");
+                    return
+                }
+
+                console.log(this.content)
+
+                axios.post('/api/notice/send', {content: this.content})
+                    .then(function (value) {
+                        alert("发布成功")
+                        console.log(value)
+                    }).catch(function (error) {
+                    console.log(error)
+                })
+            }
+        }
+    })
+</script>

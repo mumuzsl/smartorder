@@ -1,0 +1,70 @@
+<div class="layuimini-main">
+
+    <div class="layui-form layuimini-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜品名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="foodname" value="" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜品简介</label>
+            <div class="layui-input-block">
+                <input type="text" name="foodbrief""  value="" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜品价格</label>
+            <div class="layui-input-block">
+                <input type="text" name="foodprice" value="" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">是否推荐</label>
+            <div class="layui-input-block">
+                <input type="text" name="foodrecommend" value="" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">菜品描述</label>
+            <div class="layui-input-block">
+                <input type="text" name="fooddescription" value="" class="layui-input" disabled="disabled">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择图片</label>
+            <div>
+                <img src="../../images/logo.png" style="width:150px;height: 150px" id="img_food">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="backBtn">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听返回
+        form.on('submit(backBtn)', function (data) {
+          
+                // 关闭弹出层
+                layer.close(parentIndex);
+            });
+            return false;
+        });   
+</script>

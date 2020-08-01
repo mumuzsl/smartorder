@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: smartorder
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 132135138zsl
+    url: jdbc:mysql://127.0.0.1:3306/smartorder?serverTimezone=Asia/Shanghai
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      max-active: 10
+      initial-size: 1
+      use-unfair-lock: true
+  mvc:
+    format:
+      date: yyyy-MM-dd
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
+
+
+server:
+  port: 8080
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.cqjtu.smartorder.dao
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    #    root: info
+    org:
+      springframework:
+        web: info
+        security: info
+
+web:
+  upload:
+    path: D:/upload/
+

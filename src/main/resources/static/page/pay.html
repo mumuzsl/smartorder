@@ -1,0 +1,59 @@
+<style>
+    .pay-box {
+        margin: auto;
+        text-align: center;
+    }
+
+    .pay-box img {
+        width: 20%;
+        margin: 20px;
+    }
+</style>
+<!--<div class="layuimini-container layuimini-page-anim">-->
+<!--    <div class="layuimini-main">-->
+
+<div>
+    <div class="pay-box">
+        <img src="/static/images/weixinpay.png">
+        <img src="/static/images/alipay.jpg">
+<!--        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">我已保存</button>-->
+    </div>
+</div>
+
+<script>
+    layui.use(['form', 'table'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            table = layui.table,
+            $ = layui.$;
+
+        /**
+         * 初始化表单，要加上，不然刷新部分组件可能会不加载
+         */
+        form.render();
+
+        // 当前弹出层，防止ID被覆盖
+        var parentIndex = layer.index;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+
+            // var index = layer.alert(JSON.stringify(data.field), {
+            //     title: '最终的提交信息'
+            // }, function () {
+            //
+            //     // 关闭弹出层
+            //     layer.close(index);
+            //     layer.close(parentIndex);
+            //
+            // });
+
+            layer.close(parentIndex);
+
+            return false;
+        });
+
+    });
+</script>
+<!--    </div>-->
+<!--</div>-->

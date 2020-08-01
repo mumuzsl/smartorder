@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cqjtu.smartorder.dao.mapper.OrderMapper">
+
+    <select id="findAll"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.dao.dataobject.OrderDO">
+        SELECT id,
+               uid,
+               desk_num,
+               start_time,
+               end_time,
+               amount,
+               user_id
+        FROM `order`
+        LIMIT #{offset}, #{rows};
+    </select>
+
+    <select id="findAllOrder"
+            parameterType="com.cqjtu.smartorder.dao.support.PageRequest"
+            resultType="com.cqjtu.smartorder.api.model.Order">
+        SELECT t1.uid,
+               t1.desk_num,
+               t1.start_time,
+               t1.end_time,
+               t1.amount,
+               t1.user_id,
+               t2.username
+        FROM `order` t1,
+             `user` t2
+        where t1.user_id = t2.id
+        LIMIT #{offset}, #{rows};
+    </select>
+
+    <select id="count"
+            resultType="java.lang.Integer">
+        select count(*)
+        from `order`;
+    </select>
+
+    <select id="countByStatus"
+            parameterType="java.lang.Integer"
+            resultType="java.lang.Integer">
+        select count(*)
+        from `order`
+        where status = #{status}
+    </select>
+
+    <select id="getById"
+            resultType="com.cqjtu.smartorder.dao.dataobject.OrderDO">
+        SELECT id,
+               uid,
+               desk_num,
+               start_time,
+               end_time,
+               amount,
+               user_id,
+               status
+        FROM `order`
+        where id = #{id}
+    </select>
+
+    <select id="getOrderById"
+            resultType="com.cqjtu.smartorder.api.model.Order">
+        SELECT t1.uid,
+               t1.desk_num,
+               t1.start_time,
+               t1.end_time,
+               t1.amount,
+               t1.user_id,
+               t2.username
+        FROM `order` t1,
+             `user` t2
+        where t1.user_id = t2.id
+          and t1.id = #{id}
+    </select>
+
+    <select id="getByUid"
+            resultType="com.cqjtu.smartorder.dao.dataobject.OrderDO">
+        SELECT id,
+               uid,
+               desk_num,
+               start_time,
+               end_time,
+               amount,
+               user_id,
+               status
+        FROM `order`
+        where uid = #{uid}
+    </select>
+
+    <insert id="insert"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.OrderDO"
+            useGeneratedKeys="true"
+            keyProperty="id"
+            keyColumn="id">
+        INSERT INTO `smartorder`.`order`(`desk_num`, `uid`, `start_time`, `end_time`, `amount`, `user_id`)
+        VALUES (#{deskNum}, #{uid}, #{startTime}, #{endTime}, #{amount}, #{userId});
+    </insert>
+
+
+    <update id="updateById"
+            parameterType="com.cqjtu.smartorder.dao.dataobject.OrderDO">
+        UPDATE `smartorder`.`order`
+        SET `desk_num`   = #{deskNum},
+            `uid`        = #{uid},
+            `start_time` = #{startTime},
+            `end_time`   = #{endTime},
+            `amount`     = #{amount},
+            `user_id`    = #{userId},
+            `status`     = #{status}
+        WHERE `id` = #{id};
+    </update>
+
+    <select id="findAllByStatus"
+            resultType="com.cqjtu.smartorder.api.model.Order">
+        SELECT t1.*,
+               t2.username
+        FROM `order` t1,
+             `user` t2
+        where t1.user_id = t2.id
+          and t1.status = #{status}
+        order by t1.`start_time` desc
+        LIMIT #{pageRequest.offset}, #{pageRequest.rows};
+    </select>
+
+    <select id="getMaxId" resultType="java.lang.Integer">
+        select max(id)
+        from `smartorder`.`order`;
+    </select>
+</mapper>

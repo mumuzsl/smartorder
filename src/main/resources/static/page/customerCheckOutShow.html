@@ -1,0 +1,105 @@
+<div class="layuimini-container layuimini-page-anim">
+    <div class="layuimini-main">
+        <div id="app">
+            <div class="layui-row">
+                <div class="layui-col-lg6">
+
+
+                    <div class="layui-card">
+                        <div class="layui-card-header">桌号</div>
+                        <div class="layui-card-body">{{order.deskNum}}</div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">开始时间</div>
+                        <div class="layui-card-body">{{order.startTime}}</div>
+                    </div>
+                </div>
+                <div class="layui-col-lg6">
+
+                    <div class="layui-card">
+                        <div class="layui-card-header">点餐服务员</div>
+                        <div class="layui-card-body">{{order.username}}</div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">总价</div>
+                        <div class="layui-card-body">{{order.amount}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-card">
+                <div class="layui-card-header">订单详情</div>
+                <div class="layui-card-body">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>菜品</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="detail in order.orderDetails">
+                            <td>
+                                {{detail.dishesName}}
+                            </td>
+                            <td>
+                                {{detail.price}}
+                            </td>
+                            <td>
+                                {{detail.count}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/js/axios.min.js"></script>
+<script src="/static/lib/vue/vue.js"></script>
+<script>
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            order: {},
+            menuKey: 1
+        },
+        mounted: function () {
+            setTimeout(() => {
+                this.getData()
+            }, 500)
+        },
+        methods: {
+            getData: function () {
+                var id = localStorage.getItem("orderId")
+                axios.get("api/order/" + id)
+                    .then((value) => {
+                        console.log(value)
+                        this.order = value.data
+                        console.log("aaaa")
+                        // Object.assign(this.order, {
+                        //     amount: '',
+                        //     username: '',
+                        //     startTime: '',
+                        //     deskNum: ''
+                        // })
+
+                        console.log(this.order)
+                        Object.keys(this.order).forEach((key) => {
+                            if (this.order[key] === null) {
+                                this.order[key] = '未设置'
+                            }
+                        })
+                        // Object.assign(this.order, value.data)
+                        console.log(this.order)
+                    })
+                    .catch((reason) => {
+                        console.log(reason)
+                    })
+            }
+        }
+    })
+
+</script>
