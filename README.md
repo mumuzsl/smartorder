@@ -18,6 +18,6 @@
 - 运行数据库脚本smartorder.sql
 - 运行项目，访问localhost:8080
 # 效果预览
-![image](https://github.com/mumuzsl/smartorder/tree/master/src/main/resources/static/images/sshot-1.png)
-![image](https://github.com/mumuzsl/smartorder/tree/master/src/main/resources/static/images/sshot-11.png)
-![image](https://github.com/mumuzsl/smartorder/tree/master/src/main/resources/static/images/sshot-12.png)
+![image](https://raw.githubusercontent.com/mumuzsl/smartorder/master/src/main/resources/static/images/sshot-1.png)
+![image](https://raw.githubusercontent.com/mumuzsl/smartorder/master/src/main/resources/static/images/sshot-11.png)
+![image](https://raw.githubusercontent.com/mumuzsl/smartorder/master/src/main/resources/static/images/sshot-12.png)
