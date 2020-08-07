@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -26,14 +27,18 @@ import static com.cqjtu.smartorder.util.StringUtils.hasTextAndNoWhitespaceAndLes
 public class EasyUtils {
 
     private static final Random RANDOM = new Random();
-    private static int countNum = 0;
+    private static AtomicInteger countNum = new AtomicInteger();
+    private static final int COUNT_NUM_MAX_LIMIT = 900;
+    private static final int COUNT_NUM_MIN_LIMIT = 100;
 
     private EasyUtils() {}
 
     public static int count() {
-        int temp = countNum;
-        countNum = ++countNum % 900;
-        return 100 + temp;
+        int temp = countNum.getAndIncrement();
+        if (countNum.get() >= COUNT_NUM_MAX_LIMIT) {
+            countNum.set(0);
+        }
+        return COUNT_NUM_MIN_LIMIT + temp;
     }
 
     public static String getLongId(int count) {
