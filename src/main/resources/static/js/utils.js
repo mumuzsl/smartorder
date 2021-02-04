@@ -100,12 +100,13 @@ function backToUrl(url, e) {
 // 需要token
 
 const token = readToken()
+
 // const token = '666666'
 
 function getApi(url) {
     return axios.get(perfectUrl(url), {
         //请求头配置  
-        headers: { token: token }
+        headers: {token: token}
     })
 }
 
@@ -167,7 +168,7 @@ function updateOrInsert(u, data, flag, id) {
     return axios.post(perfectUrl(u), data1,
         //请求头配置   
         {
-            headers: { token: token }
+            headers: {token: token}
         })
 }
 

@@ -14,8 +14,7 @@ public class ServerUtils {
     public static final SocketAddress LOCALHOST = new InetSocketAddress("127.0.0.1", 61616);
 
     public static void main(String[] args) {
-        try (AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open()){
-
+        try (AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open()) {
 
 
         } catch (Exception e) {

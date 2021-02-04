@@ -11,6 +11,8 @@ spring:
       max-active: 10
       initial-size: 1
       use-unfair-lock: true
+      stat-view-servlet:
+        enabled: true
   mvc:
     format:
       date: yyyy-MM-dd
@@ -27,7 +29,7 @@ mybatis:
   type-aliases-package: com.cqjtu.smartorder.dao
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 logging:
   level:
@@ -40,4 +42,17 @@ logging:
 web:
   upload:
     path: D:/upload/
+
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+  tools:
+    schema-location-pattern: "**/*.graphqls"
+    #    corsEnabled: true
+    #    cors:true
+    #      allowed-origins: http://some.domain.com
+    # if you want to @ExceptionHandler annotation for custom GraphQLErrors
+#    exception-handlers-enabled: true
+#    contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
 

@@ -39,7 +39,7 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
         map.put("menuInfo", TreeUtils.toTree(menuInfo, 0L));
         Info homeInfo = new Info("首页", "/page/home.html", "");
-        Info logoInfo = new Info("SmortOrder", "" , "/images/logo.png");
+        Info logoInfo = new Info("SmortOrder", "", "/images/logo.png");
 //        map.put("homeInfo", "{title: '首页',href: '/ruge-web-admin/page/welcome.html'}}");
 //        map.put("logoInfo", "{title: 'RUGE ADMIN',image: 'images/logo.png'}");
         map.put("homeInfo", homeInfo);

@@ -4,7 +4,7 @@
  * version:2.0
  * description:layuimini 主体框架扩展
  */
-layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function (exports) {
+layui.define(["jquery", "miniMenu", "element", "miniPage", "miniTheme"], function (exports) {
     var $ = layui.$,
         element = layui.element,
         layer = layui.layer,
@@ -47,7 +47,7 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
                     miniAdmin.renderClear(options.clearUrl);
                     miniAdmin.renderAnim(options.pageAnim);
                     miniAdmin.listen({
-                        homeInfo:data.homeInfo,
+                        homeInfo: data.homeInfo,
                         multiModule: options.multiModule,
                     });
                     miniMenu.render({
@@ -56,7 +56,7 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
                         menuChildOpen: options.menuChildOpen
                     });
                     miniPage.render({
-                        homeInfo:data.homeInfo,
+                        homeInfo: data.homeInfo,
                         menuList: data.menuInfo,
                         multiModule: options.multiModule,
                         renderPageVersion: options.renderPageVersion,
@@ -90,7 +90,7 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
          * @param clearUrl
          */
         renderClear: function (clearUrl) {
-            $('.layuimini-clear').attr('data-href',clearUrl);
+            $('.layuimini-clear').attr('data-href', clearUrl);
         },
 
         /**
@@ -151,7 +151,7 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
                 el.msExitFullscreen();
             } else if (el.oRequestFullscreen) {
                 el.oCancelFullScreen();
-            }else if (el.mozCancelFullScreen) {
+            } else if (el.mozCancelFullScreen) {
                 el.mozCancelFullScreen();
             } else if (el.webkitCancelFullScreen) {
                 el.webkitCancelFullScreen();
@@ -273,14 +273,14 @@ layui.define(["jquery", "miniMenu", "element","miniPage", "miniTheme"], function
                     tips = $(this).prop("innerHTML"),
                     isShow = $('.layuimini-tool i').attr('data-side-fold');
                 if (isShow == 0 && tips) {
-                    tips = "<ul class='layuimini-menu-left-zoom layui-nav layui-nav-tree layui-this'><li class='layui-nav-item layui-nav-itemed'>"+tips+"</li></ul>" ;
+                    tips = "<ul class='layuimini-menu-left-zoom layui-nav layui-nav-tree layui-this'><li class='layui-nav-item layui-nav-itemed'>" + tips + "</li></ul>";
                     window.openTips = layer.tips(tips, $(this), {
                         tips: [2, '#2f4056'],
                         time: 300000,
-                        skin:"popup-tips",
-                        success:function (el) {
-                            var left = $(el).position().left - 10 ;
-                            $(el).css({ left:left });
+                        skin: "popup-tips",
+                        success: function (el) {
+                            var left = $(el).position().left - 10;
+                            $(el).css({left: left});
                             element.render();
                         }
                     });

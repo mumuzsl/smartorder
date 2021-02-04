@@ -4,7 +4,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label required">餐桌号</label>
             <div class="layui-input-block">
-                <input type="text" name="tableNumber" lay-verify="required" lay-reqtext="桌号不能为空" placeholder="请输入桌号" value="" class="layui-input">
+                <input type="text" name="tableNumber" lay-verify="required" lay-reqtext="桌号不能为空" placeholder="请输入桌号"
+                       value="" class="layui-input">
                 <tip>填写该桌号。</tip>
             </div>
         </div>
@@ -12,7 +13,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label required">服务员</label>
             <div class="layui-input-block">
-                <input type="text" name="waiter" lay-verify="required" lay-reqtext="服务员不能为空" placeholder="请输入服务员名字" value="" class="layui-input">
+                <input type="text" name="waiter" lay-verify="required" lay-reqtext="服务员不能为空" placeholder="请输入服务员名字"
+                       value="" class="layui-input">
             </div>
         </div>
 
@@ -31,7 +33,7 @@
     </div>
 </div>
 <script>
-    layui.use(['form', 'table','laydate'], function () {
+    layui.use(['form', 'table', 'laydate'], function () {
         var form = layui.form,
             layer = layui.layer,
             table = layui.table,

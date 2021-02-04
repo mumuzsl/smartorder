@@ -12,6 +12,8 @@ import com.cqjtu.smartorder.dao.mapper.OrderMapper;
 import com.cqjtu.smartorder.api.OrderService;
 import com.cqjtu.smartorder.dao.support.Page;
 import com.cqjtu.smartorder.dao.support.PageRequest;
+import com.cqjtu.smartorder.dao.support.Valuable;
+import com.cqjtu.smartorder.dao.support.Valuation;
 import com.cqjtu.smartorder.global.OrderStatusEnum;
 import com.cqjtu.smartorder.util.EasyUtils;
 import org.springframework.cglib.beans.BeanCopier;
@@ -119,22 +121,63 @@ public class OrderServiceImpl extends AbstractService<OrderDO> implements OrderS
         orderMapper.insert(orderDO);
 
         List<OrderDetailParam> dishesInfo = orderParam.getDishesInfo();
-        dishesInfo.forEach(param -> {
-            OrderDetailDO orderDetailDO = new OrderDetailDO();
-            orderDetailDO.setDishesId(param.getDishesId());
-            orderDetailDO.setPrice(dishesMapper.getPriceById(param.getDishesId()));
-            orderDetailDO.setCount(param.getCount());
-            orderDetailDO.setOrderId(orderDO.getId());
 
-            orderDetailMapper.insert(orderDetailDO);
+//        dishesInfo.forEach(param -> {
+//            OrderDetailDO orderDetailDO = new OrderDetailDO();
+//            orderDetailDO.setDishesId(param.getDishesId());
+//            orderDetailDO.setPrice(dishesMapper.getPriceById(param.getDishesId()));
+//            orderDetailDO.setCount(param.getCount());
+//            orderDetailDO.setOrderId(orderDO.getId());
+//
+//            orderDetailMapper.insert(orderDetailDO);
+//
+//            final Float amount = orderDO.getAmount();
+//            orderDO.setAmount(amount + orderDetailDO.getCount() * orderDetailDO.getPrice());
+//        });
 
-            final Float amount = orderDO.getAmount();
-            orderDO.setAmount(amount + orderDetailDO.getCount() * orderDetailDO.getPrice());
-        });
+        Easy easy = new Easy();
 
+        dishesInfo.forEach(
+                param -> orderDetailMapper.insert(easy.get(param, orderDO.getId()))
+        );
+
+        orderDO.setAmount(easy.getAmount());
         orderMapper.updateById(orderDO);
 
         return orderDO.getUid();
+    }
+
+    private class Easy {
+        private OrderDetailDO orderDetailDO = new OrderDetailDO();
+        private Float amount = 0.0f;
+
+        public OrderDetailDO get(OrderDetailParam param, Integer orderDOId) {
+            orderDetailDO.setId(null);
+            orderDetailDO.setDishesId(param.getDishesId());
+            orderDetailDO.setPrice(dishesMapper.getPriceById(param.getDishesId()));
+            orderDetailDO.setCount(param.getCount());
+            orderDetailDO.setOrderId(orderDOId);
+
+            add(orderDetailDO.getPrice() * orderDetailDO.getCount());
+
+            return orderDetailDO;
+        }
+
+        public void add(Float value) {
+            amount += value;
+        }
+
+        public void zone() {
+            amount = 0.0f;
+        }
+
+        public Float getAmount() {
+            return amount;
+        }
+    }
+
+    private Valuable a(OrderDetailParam param) {
+        return Valuation.of(param.getCount(), dishesMapper.getPriceById(param.getDishesId()));
     }
 
     @Override

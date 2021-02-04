@@ -29,19 +29,20 @@ public class WebSocketServer {
 
     //发送消息
     public void sendMessage(Session session, String message) throws IOException {
-        if(session != null){
+        if (session != null) {
             synchronized (session) {
 //                System.out.println("发送数据：" + message);
                 session.getBasicRemote().sendText(message);
             }
         }
     }
+
     //给指定用户发送信息
-    public void sendInfo(String userName, String message){
+    public void sendInfo(String userName, String message) {
         Session session = sessionPools.get(userName);
         try {
             sendMessage(session, message);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

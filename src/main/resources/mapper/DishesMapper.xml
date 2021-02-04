@@ -51,12 +51,12 @@
     <update id="updateById"
             parameterType="com.cqjtu.smartorder.dao.dataobject.DishesDO">
         UPDATE `smartorder`.`dishes`
-        SET `name`        = #{name},
-            `price`       = #{price},
-            `img`         = #{img},
-            `recommend`   = #{recommend},
-            `description` = #{description},
-            `txt`         = #{txt}
+        SET `name` = #{name},
+        `price` = #{price},
+        `img` = #{img},
+        `recommend` = #{recommend},
+        `description` = #{description},
+        `txt` = #{txt}
         WHERE `id` = #{id};
     </update>
 

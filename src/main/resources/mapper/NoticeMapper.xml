@@ -42,8 +42,8 @@
             parameterType="com.cqjtu.smartorder.dao.dataobject.NoticeDO">
         UPDATE `smartorder`.`notice`
         SET `content` = #{content},
-            `title`   = #{title},
-            `uesr_id` = #{userId}
+        `title` = #{title},
+        `uesr_id` = #{userId}
         WHERE `id` = #{id};
     </update>
 
@@ -58,7 +58,7 @@
         UPDATE `smartorder`.`user_notice`
         SET `read_status` = 1
         WHERE `notice_uid` = #{noticeUid}
-          and `user_id` = #{userId}
+        and `user_id` = #{userId}
     </update>
 
     <select id="findUnreadByUserId"
@@ -67,7 +67,7 @@
         select `notice_uid`
         from `smartorder`.`user_notice`
         where `user_id` = #{userId}
-          and `read_status` = 0;
+        and `read_status` = 0;
     </select>
 
     <select id="getByUid"

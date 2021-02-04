@@ -1,0 +1,23 @@
+type Query {
+  bookById(id: ID): Book
+  orderByOrderDetailStatus(status: Int): OrderDetail
+}
+
+type Book {
+  id: ID
+  name: String
+  pageCount: Int
+  author: Author
+}
+
+type Author {
+  id: ID
+  firstName: String
+  lastName: String
+}
+
+type OrderDetail {
+    id: ID
+    dishesName: String
+    status: Int
+}

@@ -1,5 +1,6 @@
 package com.cqjtu.smartorder.api.param;
 
+import com.cqjtu.smartorder.dao.support.Valuable;
 import lombok.Data;
 
 /**

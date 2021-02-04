@@ -86,6 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 "/lib/**",
                 "/page/**",
                 "/api/captcha",
+                "/graphql",
                 "/login"
         );
     }
